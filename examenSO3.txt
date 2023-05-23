@@ -1,0 +1,53 @@
+#!/bin/bash
+
+git clone https://github.com/Serchh333/examen.git
+cd examen
+git checkout -b examen
+
+while true; do
+    echo "1. Crear un nuevo producto"
+    echo "2. Recuperar productos"
+    read -p "Seleccione una opción (1/2): " option
+
+    if [[ $option == 1 ]]; then
+        
+        read -p "Ingrese el nombre del producto (máximo 100 caracteres): " name
+        read -p "Ingrese la descripción del producto (máximo 150 caracteres): " description
+        created_date=$(date +%Y-%m-%d)  # Obtener fecha actual en formato YYYY-mm-dd
+
+        curl -X POST -H "Content-Type: application/json" -d '{
+            "name": "'"$name"'",
+            "description": "'"$description"'",
+            "created_date": "'"$created_date"'",
+            "user": "15221673"
+        }' https://tierra-nativa-api.eium.com.mx/api/examen-U3/create-product-2B
+
+    elif [[ $option == 2 ]]; then
+
+        response=$(curl -s -X GET "https://tierra-nativa-api.eium.com.mx/api/examen-U3/get-products-2B/15221673")
+
+        echo "$response" > productos.json
+
+        tar -cvzf productos.tar.gz productos.json
+
+        echo "Los primeros 3 productos:"
+        jq -r '.[:3] | "\(.id_product)---\(.name)---\(.description)"' productos.json
+    else
+        echo "Opción inválida."
+        break
+    fi
+
+    read -p "Presione Enter para continuar o escriba 'Terminado' para finalizar: " input
+
+    if [[ $input == "Terminado" ]]; then
+        break
+    fi
+done
+
+# Subir los cambios a la rama 'examen'
+git add .
+git commit -m "Examen realizado"
+git push origin examen
+
+el codigo del repositorio es:
+https://github.com/Serchh333/examen.git
