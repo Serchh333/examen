@@ -1,0 +1,73 @@
+git clone https://github.com/Serchh333/examen.git
+cd examen
+
+mkdir práctica-3
+cd práctica-3
+
+touch bustillos-aguilar.sh
+chmod +x bustillos-aguilar.sh
+
+opcion1() {
+    while true; do
+        read -p "Ingresa la URL (escribe 'NO' para salir): " url
+        if [ "$url" = "NO" ]; then
+            break
+        fi
+        read -p "Ingresa una palabra: " palabra
+        curl "$url" > "$palabra.html"
+    done
+}
+
+opcion2() {
+    curl "https://jsonplaceholder.typicode.com/posts" > "posts.json"
+}
+
+opcion3() {
+    read -p "Ingresa userId: " userId
+    read -p "Ingresa id: " id
+    read -p "Ingresa title: " title
+    read -p "Ingresa body: " body
+
+    data=$(cat <<EOF
+{
+  "userId": $userId,
+  "id": $id,
+  "title": "$title",
+  "body": "$body"
+}
+EOF
+)
+
+    response=$(curl -X POST -H "Content-Type: application/json" -d "$data" "https://jsonplaceholder.typicode.com/posts")
+    filename="${title}.json"
+    echo "$response" > "$filename"
+}
+
+while true; do
+    echo "----- Menú Principal -----"
+    echo "1. Realizar opción 1"
+    echo "2. Realizar opción 2"
+    echo "3. Realizar opción 3"
+    echo "4. Salir"
+    echo "--------------------------"
+    read -p "Selecciona una opción: " opcion
+
+    case $opcion in
+        1)
+            opcion1
+            ;;
+        2)
+            opcion2
+            ;;
+        3)
+            opcion3
+            ;;
+        4)
+            echo "Saliendo del programa..."
+            break
+            ;;
+        *)
+            echo "Opción inválida. Por favor, selecciona una opción válida."
+            ;;
+    esac
+done
