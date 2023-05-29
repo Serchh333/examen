@@ -1,0 +1,60 @@
+git clone https://github.com/Serchh333/examen.git
+cd examen
+
+mkdir unidad-4
+cd unidad-4
+
+mkdir practica-2
+cd practica-2
+
+touch practica.sh
+chmod +x practica.sh
+
+comprimir_zip() {
+    read -p "Ingresa el nombre de la carpeta a comprimir: " carpeta
+    read -p "Ingresa el nombre del archivo comprimido (.zip): " archivo
+    mkdir "$carpeta"
+    touch "$carpeta/index.html"
+    zip -r "$archivo" "$carpeta"
+}
+
+comprimir_rar() {
+    read -p "Ingresa el nombre de la carpeta a comprimir: " carpeta
+    read -p "Ingresa el nombre del archivo comprimido (.rar): " archivo
+    mkdir "$carpeta"
+    touch "$carpeta/index.html"
+    rar a "$archivo" "$carpeta"
+}
+
+while true; do
+    echo "----- Menú Principal -----"
+    echo "1. Comprimir con zip"
+    echo "2. Comprimir con rar"
+    echo "3. Salir"
+    echo "--------------------------"
+    read -p "Selecciona una opción: " opcion
+
+    case $opcion in
+        1)
+            comprimir_zip
+            ;;
+        2)
+            comprimir_rar
+            ;;
+        3)
+            echo "Saliendo del programa..."
+            break
+            ;;
+        *)
+            echo "Opción inválida. Por favor, selecciona una opción válida."
+            ;;
+    esac
+done
+
+read -p "¿Deseas descomprimir la carpeta comprimida? (SI/NO): " descomprimir
+
+if [ "$descomprimir" = "SI" ]; then
+    mkdir descomprimidos
+    read -p "Ingresa el nombre del archivo comprimido: " archivo_comprimido
+    unrar x "$archivo_comprimido" descomprimidos/
+fi
